@@ -184,6 +184,10 @@
         text-align: center;
       }
 
+      .cart-badge.is-zero {
+        display: none;
+      }
+
       .install:hover {
         filter: brightness(1.08);
       }
@@ -791,8 +795,7 @@
         gap: 8px;
       }
 
-      .cart-qty button,
-      .cart-remove {
+      .cart-qty button {
         width: 28px;
         height: 28px;
         border: 1px solid var(--line);
@@ -802,11 +805,13 @@
         cursor: pointer;
       }
 
-      .cart-remove {
+      .cart-qty .cart-remove {
         width: auto;
-        padding: 0 10px;
+        min-width: 56px;
+        padding: 0 14px;
         margin-left: 8px;
         color: var(--muted);
+        white-space: nowrap;
       }
 
       .cart-summary {
