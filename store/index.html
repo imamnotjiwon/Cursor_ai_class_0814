@@ -289,6 +289,14 @@
         display: none !important;
       }
 
+      #search-head {
+        display: none !important;
+      }
+
+      #home.is-searching #search-head {
+        display: flex !important;
+      }
+
       #home.is-searching .hero,
       #home.is-searching .hero-head {
         display: none;
@@ -1107,9 +1115,9 @@
             <h2>이달의 추천</h2>
             <p>입문하기 좋은 게임 · 규칙 설명과 함께 택배 배송</p>
           </div>
-          <div class="section-head" id="search-head" hidden>
+          <div class="section-head" id="search-head">
             <h2>검색 결과</h2>
-            <p id="search-count">0개 상품</p>
+            <p id="search-count"></p>
           </div>
           <p id="search-empty" hidden>검색 결과가 없어요. 다른 이름이나 장르를 입력해 보세요.</p>
           <section class="section" id="search-hits" hidden>
@@ -2088,7 +2096,6 @@
         const q = searchInput.value.trim().toLowerCase();
         const searching = q.length > 0;
         home.classList.toggle("is-searching", searching);
-        document.getElementById("search-head").hidden = !searching;
         let hits = 0;
         document.querySelectorAll("#home .section").forEach(function (section) {
           if (section.id === "search-hits") {
@@ -2176,7 +2183,7 @@
         hits += heroHits;
         hitsSection.hidden = !searching || heroHits === 0;
         document.getElementById("search-empty").hidden = !(searching && hits === 0);
-        document.getElementById("search-count").textContent = hits + "개 상품";
+        document.getElementById("search-count").textContent = searching ? hits + "개 상품" : "";
         if (searching) {
           stopHeroRotate();
         } else if (!home.hidden) {
