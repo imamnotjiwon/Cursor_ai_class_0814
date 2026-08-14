@@ -1,0 +1,1905 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>온더테이블</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #101014;
+        --card: #202024;
+        --card-hover: #2a2a30;
+        --line: #2c2c32;
+        --text: #ffffff;
+        --muted: #a0a0a8;
+        --accent: #26bbff;
+        --sale: #26bbff;
+        --badge: #0078f2;
+        --steam: #1b2838;
+        --radius-card: 8px;
+        --radius-btn: 4px;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Noto Sans KR", sans-serif;
+        min-height: 100vh;
+      }
+
+      button,
+      input {
+        font-family: inherit;
+      }
+
+      .wrap {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: #101014;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .util {
+        border-bottom: 1px solid #15202d;
+        background: var(--steam);
+      }
+
+      .util-inner {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        height: 32px;
+        color: #8f98a0;
+        font-size: 12px;
+      }
+
+      .header-inner {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        height: 96px;
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        flex: 1;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        background: none;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+      }
+
+      .logo img {
+        display: block;
+        height: 80px;
+        width: auto;
+      }
+
+      .cat-nav {
+        display: flex;
+        gap: 22px;
+        align-items: center;
+        flex: 1;
+      }
+
+      .cat-nav a {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+      }
+
+      .cat-nav a:hover,
+      .cat-nav a.active {
+        color: var(--text);
+      }
+
+      .cat-nav a.active {
+        box-shadow: inset 0 -2px 0 var(--accent);
+        padding-bottom: 4px;
+      }
+
+      .search {
+        width: 220px;
+        height: 36px;
+        padding: 0 14px;
+        border: 0;
+        border-radius: 18px;
+        background: var(--card);
+        color: var(--muted);
+        font-size: 13px;
+        pointer-events: none;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 13px;
+        white-space: nowrap;
+      }
+
+      .install {
+        height: 32px;
+        padding: 0 14px;
+        border: 0;
+        border-radius: var(--radius-btn);
+        background: var(--accent);
+        color: #081018;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: default;
+      }
+
+      .promo {
+        background: #18181c;
+        color: var(--muted);
+        font-size: 13px;
+        text-align: center;
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .header-right a,
+      .util-inner a {
+        color: #c6d4df;
+        text-decoration: none;
+      }
+
+      .rating {
+        color: var(--muted);
+        font-size: 12px;
+        margin-bottom: 4px;
+      }
+
+      .rating em {
+        color: #ffb020;
+        font-style: normal;
+        font-weight: 700;
+      }
+
+      .buy-actions {
+        display: grid;
+        gap: 8px;
+      }
+
+      #cart-btn {
+        width: 100%;
+        height: 44px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-btn);
+        background: transparent;
+        color: var(--text);
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .specs {
+        margin: 24px 0 8px;
+      }
+
+      .specs > h3 {
+        font-size: 15px;
+        margin-bottom: 4px;
+      }
+
+      .spec-row {
+        display: grid;
+        grid-template-columns: 88px 1fr;
+        gap: 12px;
+        padding: 12px 0;
+        border-top: 1px solid var(--line);
+        font-size: 14px;
+      }
+
+      .spec-row:last-child {
+        border-bottom: 1px solid var(--line);
+      }
+
+      .spec-row dt {
+        color: var(--muted);
+      }
+
+      .sep {
+        opacity: 0.45;
+      }
+
+      #home,
+      #detail {
+        padding: 28px 0 48px;
+        opacity: 1;
+        transition: opacity 0.32s ease;
+      }
+
+      #home.is-leaving,
+      #detail.is-leaving {
+        opacity: 0;
+      }
+
+      #detail[hidden],
+      #home[hidden] {
+        display: none;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.7fr 1fr;
+        gap: 16px;
+        margin-bottom: 40px;
+        min-height: 420px;
+      }
+
+      .hero-main {
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        overflow: hidden;
+        border: 0;
+        border-radius: var(--radius-card);
+        background: var(--card);
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+        min-height: 420px;
+      }
+
+      .hero-main .cover,
+      .detail-banner .cover {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #18181c;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .card .cover img,
+      .spot .cover img,
+      .detail-banner .cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .hero-main .cover .hero-photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 0.55s ease;
+      }
+
+      .hero-main .cover .hero-photo.is-front {
+        opacity: 1;
+      }
+
+      .hero-progress {
+        pointer-events: none;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 3;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .hero-progress span {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: var(--accent);
+        box-shadow: 0 0 10px rgba(38, 187, 255, 0.8);
+      }
+
+      .hero-progress span.run {
+        animation: hero-bar 4s linear forwards;
+      }
+
+      .hero.is-paused .hero-progress span.run {
+        animation-play-state: paused;
+      }
+
+      @keyframes hero-bar {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+
+      .hero-copy {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        padding: 24px;
+        background: linear-gradient(transparent, rgba(16, 16, 20, 0.92));
+        color: #fff;
+        transition: opacity 0.25s ease;
+      }
+
+      .hero-copy.is-swap {
+        opacity: 0.25;
+      }
+
+      .hero-copy h2 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: #fff;
+      }
+
+      .hero-copy p {
+        color: #f0f0f0;
+        font-size: 14px;
+      }
+
+      .spot p {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .hero-side {
+        display: grid;
+        grid-template-rows: repeat(3, 1fr);
+        gap: 10px;
+      }
+
+      .spot {
+        display: grid;
+        grid-template-columns: 92px 1fr;
+        gap: 12px;
+        align-items: center;
+        padding: 10px;
+        border: 0;
+        border-radius: var(--radius-card);
+        background: transparent;
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+
+      .spot:hover,
+      .spot.active {
+        background: var(--card);
+      }
+
+      .spot:hover {
+        transform: translateY(-4px);
+      }
+
+      .spot.active {
+        box-shadow: inset 3px 0 0 var(--accent);
+      }
+
+      .spot .cover {
+        height: 72px;
+        overflow: hidden;
+        border-radius: 6px;
+        background: #18181c;
+      }
+
+      .spot h3 {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .section-head h2 {
+        margin-bottom: 0;
+      }
+
+      .section-head p {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .cover {
+        position: relative;
+      }
+
+      .hero-main .cover .flag {
+        z-index: 2;
+      }
+
+      .flag {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        z-index: 1;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .flag-free {
+        background: var(--accent);
+        color: #081018;
+      }
+
+      .flag-ea {
+        background: var(--badge);
+        color: #fff;
+      }
+
+      .section {
+        margin-bottom: 36px;
+      }
+
+      .section h2 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 16px;
+      }
+
+      .card {
+        border: 0;
+        background: none;
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(22px);
+        transition: transform 0.45s ease, opacity 0.45s ease;
+      }
+
+      .card.is-in {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .card .cover {
+        aspect-ratio: 3 / 4;
+        margin-bottom: 10px;
+        overflow: hidden;
+        border-radius: var(--radius-card);
+        background: var(--card);
+        border: 1px solid var(--line);
+        transition: border-color 0.22s ease, box-shadow 0.22s ease;
+      }
+
+      .card-more {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(16, 16, 20, 0.55);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        opacity: 0;
+        transition: opacity 0.22s ease;
+        pointer-events: none;
+      }
+
+      .card.is-in:hover {
+        transform: translateY(-8px);
+      }
+
+      .card:hover .cover {
+        background: var(--card-hover);
+        border-color: #3a3a44;
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
+      }
+
+      .card:hover .card-more {
+        opacity: 1;
+      }
+
+      .card h3 {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      .price-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .badge {
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: var(--badge);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .original {
+        color: var(--muted);
+        font-size: 12px;
+        text-decoration: line-through;
+      }
+
+      .price {
+        color: var(--accent);
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      footer {
+        border-top: 1px solid var(--line);
+        padding: 20px 0 32px;
+        color: var(--muted);
+        font-size: 13px;
+        text-align: center;
+      }
+
+      .back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 20px;
+        border: 0;
+        background: none;
+        color: var(--muted);
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .back:hover {
+        color: var(--text);
+      }
+
+      .detail-grid {
+        display: grid;
+        grid-template-columns: 1.7fr 0.9fr;
+        gap: 32px;
+        align-items: start;
+      }
+
+      .detail-lead {
+        font-size: 16px;
+        line-height: 1.7;
+        margin-bottom: 20px;
+      }
+
+      .meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      .meta h3 {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 500;
+        margin-bottom: 10px;
+      }
+
+      .tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .tags span {
+        padding: 6px 12px;
+        border-radius: 4px;
+        background: #3a3a40;
+        color: var(--text);
+        font-size: 13px;
+      }
+
+      .detail-banner {
+        position: relative;
+        width: 100%;
+        min-height: 560px;
+        aspect-ratio: 16 / 7;
+        margin-bottom: 28px;
+        overflow: hidden;
+        border-radius: var(--radius-card);
+        background: var(--card);
+      }
+
+      .detail-banner .cover img {
+        transition: transform 0.55s ease;
+      }
+
+      .detail-banner:hover .cover img {
+        transform: scale(1.08);
+      }
+
+      .related {
+        margin-top: 48px;
+      }
+
+      .related .row {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .toast {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        z-index: 50;
+        min-width: 240px;
+        padding: 14px 18px;
+        border-radius: 8px;
+        background: #202024;
+        border: 1px solid rgba(38, 187, 255, 0.4);
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+        opacity: 0;
+        transform: translateY(12px);
+        pointer-events: none;
+        transition: opacity 0.25s ease, transform 0.25s ease;
+      }
+
+      .toast.is-on {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .expand-btn {
+        display: inline-flex;
+        margin: 12px 0 28px;
+        border: 0;
+        background: none;
+        color: var(--accent);
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .expand-body {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.7;
+        margin: -12px 0 28px;
+      }
+
+      .expand-body[hidden] {
+        display: none;
+      }
+
+      .achieve-head {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+
+      .achieves {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+      }
+
+      .achieve-icon {
+        width: 72px;
+        height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 8px;
+        border-radius: 4px;
+        background: #2a3344;
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .achieve p {
+        font-size: 13px;
+        margin-bottom: 4px;
+      }
+
+      .achieve span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .all-achieves {
+        display: inline-block;
+        margin-top: 16px;
+        color: var(--accent);
+        font-size: 14px;
+        text-decoration: none;
+      }
+
+      .buy-box {
+        position: sticky;
+        top: 140px;
+        padding: 20px;
+        border-radius: var(--radius-card);
+        background: var(--card);
+        border: 1px solid var(--line);
+      }
+
+      .buy-box h1 {
+        font-size: 22px;
+        margin-bottom: 16px;
+      }
+
+      .detail-price {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 8px;
+      }
+
+      .ship-note {
+        color: var(--muted);
+        font-size: 13px;
+        margin-bottom: 16px;
+        line-height: 1.5;
+      }
+
+      #download-btn {
+        width: 100%;
+        height: 44px;
+        border: 0;
+        border-radius: var(--radius-btn);
+        background: var(--accent);
+        color: #081018;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      #download-btn:disabled {
+        opacity: 0.7;
+        cursor: default;
+      }
+
+      @media (max-width: 900px) {
+        .hero,
+        .detail-grid,
+        .meta,
+        .achieves {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-main,
+        .detail-banner {
+          min-height: 360px;
+          aspect-ratio: auto;
+        }
+
+        .buy-box {
+          position: static;
+        }
+
+        .row {
+          display: flex;
+          overflow-x: auto;
+          padding-bottom: 8px;
+        }
+
+        .card {
+          flex: 0 0 160px;
+        }
+
+        .search,
+        .util,
+        .cat-nav {
+          display: none;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .hero-progress span.run {
+          animation: none;
+        }
+
+        .card,
+        .card.is-in,
+        .card.is-in:hover,
+        .spot,
+        .spot:hover {
+          opacity: 1;
+          transform: none;
+        }
+
+        .detail-banner:hover .cover img {
+          transform: none;
+        }
+
+        #home,
+        #detail,
+        #home.is-leaving,
+        #detail.is-leaving {
+          opacity: 1;
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="util">
+        <div class="wrap util-inner">
+          <a href="#" id="nav-login">로그인</a>
+          <span class="sep">|</span>
+          <a href="#" id="nav-join">회원가입</a>
+          <span class="sep">|</span>
+          <a href="#" id="nav-support">고객센터</a>
+        </div>
+      </div>
+      <div class="wrap header-inner">
+        <button class="logo" type="button" id="logo-btn" aria-label="온더테이블">
+          <img src="images/logo.png" alt="온더테이블" />
+        </button>
+        <nav class="cat-nav">
+          <a href="#" class="active" id="nav-store">스토어</a>
+          <a href="#deals" id="nav-new">신상품</a>
+          <a href="#best" id="nav-best">베스트</a>
+          <a href="#" id="nav-about">배송안내</a>
+        </nav>
+        <input class="search" type="text" value="보드게임 검색" readonly tabindex="-1" />
+        <div class="header-right">
+          <button class="install" type="button">장바구니</button>
+        </div>
+      </div>
+    </header>
+    <p class="promo">수업용 연습 스토어입니다. 실제 결제·배송은 되지 않아요.</p>
+
+    <main>
+      <section id="home">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>이달의 추천</h2>
+            <p>입문하기 좋은 게임 · 규칙 설명과 함께 택배 배송</p>
+          </div>
+          <div class="hero">
+            <button
+              class="hero-main"
+              type="button"
+              id="hero-main"
+              data-title="카탄"
+              data-price="45,000원"
+              data-desc="주사위로 자원을 얻고, 도로·마을·도시를 지어 10점을 먼저 내면 이깁니다. 3~4인, 60~90분."
+              data-more="차례마다 주사위 2개를 굴립니다. 나온 숫자 칸에 마을이 있으면 자원을 받고, 사람과 거래한 뒤 도로(벽돌+나무)·마을·도시를 짓습니다. 합이 7이면 도둑이 움직입니다. 최장 도로·최강 기사 점수도 있습니다. 구성: 육각 타일, 자원 카드, 말, 주사위, 설명서. 택배 2~3일."
+              data-tags="전략, 가족, 입문"
+              data-features="3~4인, 60~90분, 만 10세"
+            >
+              <div class="cover" id="hero-cover">
+                <span class="flag flag-ea">입문</span>
+                <img class="hero-photo is-front" src="images/catan.jpg" alt="카탄" />
+              </div>
+              <div class="hero-copy" id="hero-copy">
+                <h2 id="hero-title">카탄</h2>
+                <p id="hero-price">45,000원</p>
+              </div>
+              <div class="hero-progress" aria-hidden="true"><span id="hero-progress-bar" class="run"></span></div>
+            </button>
+
+            <div class="hero-side">
+              <button
+                class="spot active"
+                type="button"
+                data-title="카탄"
+                data-price="45,000원"
+                data-desc="주사위로 자원을 얻고, 도로·마을·도시를 지어 10점을 먼저 내면 이깁니다. 3~4인, 60~90분."
+                data-more="차례마다 주사위 2개를 굴립니다. 나온 숫자 칸에 마을이 있으면 자원을 받고, 사람과 거래한 뒤 도로(벽돌+나무)·마을·도시를 짓습니다. 합이 7이면 도둑이 움직입니다. 최장 도로·최강 기사 점수도 있습니다. 구성: 육각 타일, 자원 카드, 말, 주사위, 설명서. 택배 2~3일."
+                data-tags="전략, 가족, 입문"
+                data-features="3~4인, 60~90분, 만 10세"
+              >
+                <div class="cover">
+                  <img src="images/catan.jpg" alt="카탄" />
+                </div>
+                <div>
+                  <h3>카탄</h3>
+                  <p>45,000원</p>
+                </div>
+              </button>
+              <button
+                class="spot"
+                type="button"
+                data-title="윙스팬"
+                data-price="48,000원"
+                data-desc="새 카드를 숲·초원·습지에 놓아 엔진을 키웁니다. 4라운드, 1~5인, 40~70분."
+                data-more="차례에 행동 하나: 새 놓기, 먹이 얻기, 알 낳기, 카드 뽑기. 새가 많을수록 그 줄이 세집니다. 끝점수는 새+알+먹이+보너스+라운드 목표입니다. 구성: 새 카드, 보드, 알 토큰, 주사위 탑, 설명서. 택배 2~3일."
+                data-tags="전략, 엔진빌딩, 가족"
+                data-features="1~5인, 40~70분, 만 10세"
+              >
+                <div class="cover">
+                  <span class="flag flag-ea">인기</span>
+                  <img src="images/wingspan.jpg" alt="윙스팬" />
+                </div>
+                <div>
+                  <h3>윙스팬</h3>
+                  <p>48,000원</p>
+                </div>
+              </button>
+              <button
+                class="spot"
+                type="button"
+                data-title="코드네임"
+                data-price="29,000원"
+                data-desc="힌트 한 단어로 우리 팀 단어를 맞힙니다. 암살자를 고르면 즉시 패배. 4~8인, 15분."
+                data-more="5×5 단어 판을 펼칩니다. 스파이마스터가 '힌트+숫자'를 말하면 팀원이 카드를 고릅니다. 우리 팀이면 계속, 시민이면 턴 종료, 암살자면 패배. 자기 팀 단어를 먼저 다 맞히면 승리. 구성: 단어 카드, 키 카드, 덮개, 설명서. 무료배송."
+                data-tags="파티, 단어, 팀전"
+                data-features="4~8인, 15분, 만 10세"
+              >
+                <div class="cover">
+                  <img src="images/codenames.jpg" alt="코드네임" />
+                </div>
+                <div>
+                  <h3>코드네임</h3>
+                  <p>29,000원</p>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <section class="section" id="deals">
+            <div class="section-head">
+              <h2>신상품 · 특가</h2>
+              <p>이번 주 택배 특가 · 5만 원 이상 무료배송</p>
+            </div>
+            <div class="row">
+              <button
+                class="card"
+                type="button"
+                data-title="스플렌더"
+                data-price="29,000원"
+                data-desc="보석을 모아 개발 카드를 사고, 15점을 먼저 내면 이깁니다. 2~4인, 30분."
+                data-more="차례에 하나만: 보석 3색 가져오기, 같은 색 2개, 카드 사기, 또는 예약(+황금 조커). 산 카드는 영구 할인이 됩니다. 귀족 방문은 3점. 15점이면 그 라운드 끝까지 하고 최고점 승리. 구성: 보석 토큰, 개발 카드, 귀족 타일, 설명서."
+                data-tags="전략, 카드, 입문"
+                data-features="2~4인, 30분, 만 10세"
+              >
+                <div class="cover">
+                  <img src="images/splendor.jpg" alt="스플렌더" />
+                </div>
+                <h3>스플렌더</h3>
+                <div class="price-row">
+                  <span class="badge">-19%</span>
+                  <span class="original">36,000원</span>
+                  <span class="price">29,000원</span>
+                </div>
+              </button>
+              <button
+                class="card"
+                type="button"
+                data-title="아줄"
+                data-price="35,000원"
+                data-desc="공장에서 같은 색 타일만 가져와 줄을 채웁니다. 벽이 차면 점수. 2~4인, 30~45분."
+                data-more="한 색만 가져가고 나머지는 가운데로 둡니다. 줄이 가득 차면 벽에 1장을 붙입니다. 바닥에 버린 타일은 감점. 가로줄 하나가 완성되면 마지막 라운드. 구성: 공장 보드, 플레이어 보드, 타일, 설명서."
+                data-tags="추상, 가족, 타일"
+                data-features="2~4인, 30~45분, 만 8세"
+              >
+                <div class="cover">
+                  <img src="images/azul.jpg" alt="아줄" />
+                </div>
+                <h3>아줄</h3>
+                <div class="price-row">
+                  <span class="badge">-17%</span>
+                  <span class="original">42,000원</span>
+                  <span class="price">35,000원</span>
+                </div>
+              </button>
+              <button
+                class="card"
+                type="button"
+                data-title="카르카손"
+                data-price="32,000원"
+                data-desc="타일을 이어 도시와 길을 만들고, 말을 올려 점수를 받습니다. 2~5인, 30~45분."
+                data-more="타일 1장을 지형에 맞게 놓고, 원하면 미플(말)을 올립니다. 도시·길이 닫히면 점수를 받고 말을 돌려받습니다. 수도원은 주변 8칸이 차면 9점. 구성: 지형 타일, 미플, 점수 트랙, 설명서."
+                data-tags="가족, 타일, 입문"
+                data-features="2~5인, 30~45분, 만 7세"
+              >
+                <div class="cover">
+                  <img src="images/carcassonne.jpg" alt="카르카손" />
+                </div>
+                <h3>카르카손</h3>
+                <div class="price-row">
+                  <span class="badge">-16%</span>
+                  <span class="original">38,000원</span>
+                  <span class="price">32,000원</span>
+                </div>
+              </button>
+              <button
+                class="card"
+                type="button"
+                data-title="딕싯"
+                data-price="47,000원"
+                data-desc="이야기꾼이 그림에 힌트를 주고, 나머지는 비슷한 그림을 섞어 투표합니다. 3~6인, 30분."
+                data-more="각자 카드 6장. 이야기꾼이 힌트를 내면 다른 사람은 비슷한 그림을 냅니다. 섞어 펼친 뒤 이야기꾼 카드를 고릅니다. 모두 맞히거나 아무도 못 맞히면 이야기꾼은 0점. 구성: 그림 카드, 투표 칩, 토끼 말, 설명서."
+                data-tags="파티, 이야기, 그림"
+                data-features="3~6인, 30분, 만 8세"
+              >
+                <div class="cover">
+                  <img src="images/dixit.jpg" alt="딕싯" />
+                </div>
+                <h3>딕싯</h3>
+                <div class="price-row">
+                  <span class="badge">-20%</span>
+                  <span class="original">59,000원</span>
+                  <span class="price">47,000원</span>
+                </div>
+              </button>
+              <button
+                class="card"
+                type="button"
+                data-title="할리갈리"
+                data-price="19,000원"
+                data-desc="같은 과일이 정확히 5개가 되면 종을 칩니다. 2~6인, 10~15분."
+                data-more="차례로 카드를 뒤집습니다. 같은 과일 합이 5개면 종. 가장 빠른 사람이 공개된 카드를 가져갑니다. 잘못 치면 카드를 나눠 줍니다. 구성: 과일 카드, 종, 설명서."
+                data-tags="파티, 순발력, 가족"
+                data-features="2~6인, 10~15분, 만 6세"
+              >
+                <div class="cover">
+                  <img src="images/halligalli.jpg" alt="할리갈리" />
+                </div>
+                <h3>할리갈리</h3>
+                <div class="price-row">
+                  <span class="badge">-14%</span>
+                  <span class="original">22,000원</span>
+                  <span class="price">19,000원</span>
+                </div>
+              </button>
+            </div>
+          </section>
+
+          <section class="section" id="best">
+            <div class="section-head">
+              <h2>베스트</h2>
+              <p>모임에서 자주 꺼내는 게임 · 설명서 포함 배송</p>
+            </div>
+            <div class="row">
+              <button
+                class="card"
+                type="button"
+                data-title="루미큐브"
+                data-price="43,000원"
+                data-desc="숫자 타일로 같은 숫자 세트나 연속 숫자를 만듭니다. 손을 먼저 비우면 승리. 2~4인, 30~60분."
+                data-more="첫 등록은 합 30점 이상. 이후 타일을 내거나 나온 줄을 재조합합니다. 조커는 아무 숫자·색이나 대신합니다. 구성: 타일, 받침대, 설명서. 5만 원 미만이라 배송비가 붙을 수 있습니다."
+                data-tags="가족, 타일, 입문"
+                data-features="2~4인, 30~60분, 만 8세"
+              >
+                <div class="cover">
+                  <img src="images/rummikub.jpg" alt="루미큐브" />
+                </div>
+                <h3>루미큐브</h3>
+                <div class="price-row"><span class="price">43,000원</span></div>
+              </button>
+              <button
+                class="card"
+                type="button"
+                data-title="티켓 투 라이드"
+                data-price="59,000원"
+                data-desc="기차 카드를 모아 지도 위 노선을 점유합니다. 목적지 티켓을 달성하면 큰 점수. 2~5인, 30~60분."
+                data-more="차례에 하나만: 기차 카드 2장, 같은 색으로 노선 놓기, 또는 목적지 티켓 추가. 기차 말이 2개 이하면 한 바퀴 더 하고 끝. 목적지 실패는 감점, 최장 경로 +10점. 구성: 보드, 기차 말, 카드, 설명서. 무료배송."
+                data-tags="가족, 전략, 기차"
+                data-features="2~5인, 30~60분, 만 8세"
+              >
+                <div class="cover">
+                  <span class="flag flag-ea">인기</span>
+                  <img src="images/tickettoride.jpg" alt="티켓 투 라이드" />
+                </div>
+                <h3>티켓 투 라이드</h3>
+                <div class="price-row"><span class="price">59,000원</span></div>
+              </button>
+              <button
+                class="card"
+                type="button"
+                data-title="팬데믹"
+                data-price="52,000원"
+                data-desc="모두 한 팀입니다. 행동 4번으로 질병을 치료하고, 치료제 4개를 만들면 전원 승리. 2~4인, 45분."
+                data-more="역할(위생병, 과학자 등)을 받고 애틀랜타에서 시작합니다. 이동·치료·연구소·카드 공유·치료제 발견을 4행동 안에 합니다. 전염 카드가 나오면 감염이 급증합니다. 큐브나 카드가 떨어지면 전원 패배. 구성: 세계 지도, 역할 카드, 질병 큐브, 설명서. 무료배송."
+                data-tags="협력, 전략, 가족"
+                data-features="2~4인, 45분, 만 8세"
+              >
+                <div class="cover">
+                  <span class="flag flag-free">무료배송</span>
+                  <img src="images/pandemic.jpg" alt="팬데믹" />
+                </div>
+                <h3>팬데믹</h3>
+                <div class="price-row"><span class="price">52,000원</span></div>
+              </button>
+              <button
+                class="card"
+                type="button"
+                data-title="웨어울프"
+                data-price="25,000원"
+                data-desc="밤에 직업을 확인하고, 낮에 한 번만 투표합니다. 원나잇 규칙, 3~10인, 약 10분."
+                data-more="인원보다 3장 많게 직업을 나눠 주고 3장은 가운데 둡니다. 밤 동안 늑대·예언자 등이 카드를 보거나 바꿉니다. 아침에 한 번 투표해 가장 표를 받은 사람을 공개합니다. 마을이 늑대를 죽이면 마을 승. 구성: 직업 카드, 토큰, 설명서."
+                data-tags="파티, 추리, 대화"
+                data-features="3~10인, 10분, 만 13세"
+              >
+                <div class="cover">
+                  <img src="images/werewolf.jpg" alt="웨어울프" />
+                </div>
+                <h3>웨어울프</h3>
+                <div class="price-row"><span class="price">25,000원</span></div>
+              </button>
+              <button
+                class="card"
+                type="button"
+                data-title="젠가"
+                data-price="18,000원"
+                data-desc="탑에서 블록을 뽑아 위에 쌓습니다. 무너뜨린 사람이 집니다. 인원 제한 없음, 약 10분."
+                data-more="3개씩 방향을 바꿔 탑을 쌓습니다. 한 손으로 블록 1개를 빼고 맨 위에 놓습니다. 맨 위 완성 층은 빼지 않습니다. 구성: 나무 블록 54개, 설명서. 완충 포장 배송."
+                data-tags="파티, 순발력, 가족"
+                data-features="1인~, 10분, 만 6세"
+              >
+                <div class="cover">
+                  <img src="images/jenga.jpg" alt="젠가" />
+                </div>
+                <h3>젠가</h3>
+                <div class="price-row"><span class="price">18,000원</span></div>
+              </button>
+            </div>
+          </section>
+
+          <section class="section" id="party">
+            <div class="section-head">
+              <h2>파티 게임</h2>
+              <p>설명 5분 · 사람 많을 때 바로 꺼내는 게임</p>
+            </div>
+            <div class="row">
+              <button
+                class="card"
+                type="button"
+                data-title="우노"
+                data-price="12,000원"
+                data-desc="같은 색이나 숫자를 내며 손을 비웁니다. 마지막 한 장일 때 우노를 외칩니다. 2~10인, 15분."
+                data-more="자기 차례에 맨 위 카드와 색 또는 숫자가 같은 카드를 냅니다. 스킵·리버스·+2·와일드로 흐름을 바꿉니다. 마지막 한 장을 내기 전에 우노를 말하지 않으면 카드 2장을 받습니다. 구성: 카드, 설명서."
+                data-tags="파티, 카드, 가족"
+                data-features="2~10인, 15분, 만 7세"
+              >
+                <div class="cover">
+                  <span class="flag flag-ea">입문</span>
+                  <img src="images/uno.jpg" alt="우노" />
+                </div>
+                <h3>우노</h3>
+                <div class="price-row"><span class="price">12,000원</span></div>
+              </button>
+              <button
+                class="card"
+                type="button"
+                data-title="도블"
+                data-price="18,000원"
+                data-desc="두 원형 카드에서 같은 그림 하나를 먼저 찾습니다. 2~8인, 10분."
+                data-more="어떤 두 장을 골라도 같은 그림이 정확히 하나 있습니다. 먼저 외친 사람이 카드를 가져갑니다. 여러 미니 규칙으로 바꿀 수 있습니다. 구성: 원형 카드, 설명서."
+                data-tags="파티, 순발력, 가족"
+                data-features="2~8인, 10분, 만 6세"
+              >
+                <div class="cover">
+                  <img src="images/dobble.jpg" alt="도블" />
+                </div>
+                <h3>도블</h3>
+                <div class="price-row">
+                  <span class="badge">-18%</span>
+                  <span class="original">22,000원</span>
+                  <span class="price">18,000원</span>
+                </div>
+              </button>
+              <button
+                class="card"
+                type="button"
+                data-title="사보타지"
+                data-price="24,000원"
+                data-desc="광부는 금을 찾고, 방해꾼은 길을 막습니다. 정체를 숨긴 채 터널을 잇습니다. 3~10인, 30분."
+                data-more="직업 카드를 몰래 봅니다. 자기 차례에 길 카드로 터널을 잇거나, 곡괭이를 깨거나 고칩니다. 금에 먼저 닿으면 광부 승, 길이 막히면 방해꾼 승. 구성: 길 카드, 직업 카드, 금 카드, 설명서."
+                data-tags="파티, 추리, 카드"
+                data-features="3~10인, 30분, 만 8세"
+              >
+                <div class="cover">
+                  <img src="images/saboteur.jpg" alt="사보타지" />
+                </div>
+                <h3>사보타지</h3>
+                <div class="price-row"><span class="price">24,000원</span></div>
+              </button>
+              <button
+                class="card"
+                type="button"
+                data-title="러브레터"
+                data-price="16,000원"
+                data-desc="손카드 한 장으로 공주에게 편지를 전합니다. 상대를 탈락시키면 유리. 2~6인, 15분."
+                data-more="매 턴 카드 1장을 뽑아 1장을 씁니다. 경비병은 직업을 맞히고, 공주(8)는 내면 탈락입니다. 마지막까지 남거나 손패 숫자가 높으면 승리. 구성: 카드 16장, 토큰, 설명서."
+                data-tags="파티, 카드, 추리"
+                data-features="2~6인, 15분, 만 10세"
+              >
+                <div class="cover">
+                  <img src="images/loveletter.jpg" alt="러브레터" />
+                </div>
+                <h3>러브레터</h3>
+                <div class="price-row"><span class="price">16,000원</span></div>
+              </button>
+              <button
+                class="card"
+                type="button"
+                data-title="아발론"
+                data-price="32,000원"
+                data-desc="선과 악이 섞인 원탁. 원정을 성공시키거나 실패로 이끕니다. 5~10인, 30분."
+                data-more="밤에 악은 서로를 보고, 멀린은 악을 봅니다. 낮에는 팀을 짜 원정 카드를 냅니다. 실패가 쌓이면 악 승, 원정 3회 성공이면 선 승. 암살자가 멀린을 맞히면 뒤집힙니다. 구성: 역할 카드, 원정 토큰, 설명서."
+                data-tags="파티, 추리, 대화"
+                data-features="5~10인, 30분, 만 13세"
+              >
+                <div class="cover">
+                  <span class="flag flag-ea">인기</span>
+                  <img src="images/avalon.jpg" alt="아발론" />
+                </div>
+                <h3>아발론</h3>
+                <div class="price-row"><span class="price">32,000원</span></div>
+              </button>
+            </div>
+          </section>
+
+          <section class="section" id="strategy">
+            <div class="section-head">
+              <h2>전략 추천</h2>
+              <p>한 판이 알찬 게임 · 설명서 포함 배송</p>
+            </div>
+            <div class="row">
+              <button
+                class="card"
+                type="button"
+                data-title="세븐 원더스"
+                data-price="52,000원"
+                data-desc="동시에 카드를 골라 문명을 키웁니다. 경이 7개를 짓는 드래프트. 3~7인, 30분."
+                data-more="각자 경이 보드를 받습니다. 손패에서 카드 1장을 고르고 나머지를 옆 사람에게 넘깁니다. 자원·군사·과학·경이로 점수를 냅니다. 3시대가 끝나면 합산. 구성: 경이 보드, 시대 카드, 토큰, 설명서. 무료배송."
+                data-tags="전략, 카드, 문명"
+                data-features="3~7인, 30분, 만 10세"
+              >
+                <div class="cover">
+                  <span class="flag flag-free">무료배송</span>
+                  <img src="images/sevenwonders.jpg" alt="세븐 원더스" />
+                </div>
+                <h3>세븐 원더스</h3>
+                <div class="price-row"><span class="price">52,000원</span></div>
+              </button>
+              <button
+                class="card"
+                type="button"
+                data-title="캐스캐디아"
+                data-price="48,000원"
+                data-desc="서식지 타일과 동물을 맞춰 태평양 북서를 만듭니다. 1~4인, 30~45분."
+                data-more="매 턴 타일+동물 조합 하나를 가져옵니다. 같은 지형을 잇고, 동물 배치 조건에 맞추면 점수가 납니다. 가장 큰 서식지와 동물 점수를 합산. 구성: 육각 타일, 동물 토큰, 점수 카드, 설명서."
+                data-tags="가족, 타일, 자연"
+                data-features="1~4인, 30~45분, 만 8세"
+              >
+                <div class="cover">
+                  <img src="images/cascadia.jpg" alt="캐스캐디아" />
+                </div>
+                <h3>캐스캐디아</h3>
+                <div class="price-row"><span class="price">48,000원</span></div>
+              </button>
+              <button
+                class="card"
+                type="button"
+                data-title="킹도미노"
+                data-price="24,000원"
+                data-desc="왕국 도미노를 이어 5×5 영토를 만듭니다. 왕관이 있는 지형이 점수. 2~4인, 15분."
+                data-more="도미노를 지형이 맞게 붙입니다. 같은 지형 칸 수 × 그 지형의 왕관 수가 점수입니다. 5×5를 채우거나 한 지형으로 연결하면 보너스. 구성: 도미노 타일, 성, 왕 말, 설명서."
+                data-tags="가족, 타일, 입문"
+                data-features="2~4인, 15분, 만 8세"
+              >
+                <div class="cover">
+                  <img src="images/kingdomino.jpg" alt="킹도미노" />
+                </div>
+                <h3>킹도미노</h3>
+                <div class="price-row">
+                  <span class="badge">-14%</span>
+                  <span class="original">28,000원</span>
+                  <span class="price">24,000원</span>
+                </div>
+              </button>
+              <button
+                class="card"
+                type="button"
+                data-title="블로쿠스"
+                data-price="35,000원"
+                data-desc="자기 색 조각을 모서리만 닿게 놓습니다. 많이 놓은 사람이 승리. 2~4인, 20분."
+                data-more="21개 폴리오미노를 보드에 놓습니다. 같은 색은 변끼리 붙이면 안 되고, 꼭짓점만 닿아야 합니다. 못 놓은 칸 수가 적은 사람이 이깁니다. 구성: 보드, 색 조각 4세트, 설명서."
+                data-tags="추상, 가족, 입문"
+                data-features="2~4인, 20분, 만 5세"
+              >
+                <div class="cover">
+                  <img src="images/blokus.jpg" alt="블로쿠스" />
+                </div>
+                <h3>블로쿠스</h3>
+                <div class="price-row"><span class="price">35,000원</span></div>
+              </button>
+              <button
+                class="card"
+                type="button"
+                data-title="스컬킹"
+                data-price="29,000원"
+                data-desc="몇 트릭을 먹을지 공언하고, 해적 카드로 이깁니다. 2~6인, 30분."
+                data-more="매 라운드 공언 후 카드를 냅니다. 탈출은 약하고 인어·해적·스컬킹 순으로 셉니다. 공언을 맞히면 보너스, 스컬킹으로 인어를 잡으면 추가점. 구성: 카드, 점수 패트, 설명서."
+                data-tags="카드, 가족, 트릭테이킹"
+                data-features="2~6인, 30분, 만 8세"
+              >
+                <div class="cover">
+                  <img src="images/skullking.jpg" alt="스컬킹" />
+                </div>
+                <h3>스컬킹</h3>
+                <div class="price-row"><span class="price">29,000원</span></div>
+              </button>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="detail" hidden>
+        <div class="wrap">
+          <button class="back" type="button" id="back-btn">← 스토어로</button>
+          <div class="detail-banner">
+            <div class="cover" id="detail-cover">게임 이미지</div>
+          </div>
+          <div class="detail-grid">
+            <div>
+              <p class="detail-lead" id="detail-desc">짧은 설명</p>
+              <div class="specs">
+                <h3>상품 주요 정보</h3>
+                <dl>
+                  <div class="spec-row">
+                    <dt>인원</dt>
+                    <dd id="spec-people">-</dd>
+                  </div>
+                  <div class="spec-row">
+                    <dt>연령</dt>
+                    <dd id="spec-age">-</dd>
+                  </div>
+                  <div class="spec-row">
+                    <dt>소요시간</dt>
+                    <dd id="spec-time">-</dd>
+                  </div>
+                  <div class="spec-row">
+                    <dt>장르</dt>
+                    <dd id="spec-genre">-</dd>
+                  </div>
+                </dl>
+              </div>
+              <div class="meta">
+                <div>
+                  <h3>태그</h3>
+                  <div class="tags" id="detail-tags"></div>
+                </div>
+                <div>
+                  <h3>플레이</h3>
+                  <div class="tags" id="detail-features"></div>
+                </div>
+              </div>
+              <button class="expand-btn" type="button" id="expand-btn">규칙 더 보기 ∨</button>
+              <p class="expand-body" id="expand-body" hidden></p>
+              <h2 class="achieve-head">이런 모임에 좋아요</h2>
+              <div class="achieves">
+                <div class="achieve">
+                  <div class="achieve-icon">가족</div>
+                  <p>주말 저녁</p>
+                  <span>설명 10분</span>
+                </div>
+                <div class="achieve">
+                  <div class="achieve-icon">친구</div>
+                  <p>4인 모임</p>
+                  <span>한 판 40분</span>
+                </div>
+                <div class="achieve">
+                  <div class="achieve-icon">초보</div>
+                  <p>처음 보드</p>
+                  <span>입문 추천</span>
+                </div>
+                <div class="achieve">
+                  <div class="achieve-icon">파티</div>
+                  <p>사람 많을 때</p>
+                  <span>대화형</span>
+                </div>
+                <div class="achieve">
+                  <div class="achieve-icon">전략</div>
+                  <p>깊이 있게</p>
+                  <span>오래 두기</span>
+                </div>
+              </div>
+              <a class="all-achieves" href="#" id="all-achieves">배송 · 교환 안내 →</a>
+            </div>
+            <aside class="buy-box">
+              <h1 id="detail-title">게임 이름</h1>
+              <p class="rating" id="detail-rating">★ 4.8 · 리뷰 20</p>
+              <p class="original" id="detail-original" hidden></p>
+              <p class="detail-price" id="detail-price">0원</p>
+              <p class="ship-note">택배 3,000원 · 오늘 주문 시 2~3일 내 발송<br />5만 원 이상 무료배송 / 도서산간 별도</p>
+              <div class="buy-actions">
+                <button type="button" id="cart-btn">장바구니</button>
+                <button type="button" id="download-btn">바로 구매</button>
+              </div>
+            </aside>
+          </div>
+          <section class="section related">
+            <div class="section-head">
+              <h2>비슷한 게임</h2>
+              <p>같은 분위기 · 이어서 보기 좋아요</p>
+            </div>
+            <div class="row" id="related-row"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">온더테이블 · 수업용 보드게임 스토어 · 평일 10:00–17:00</div>
+    </footer>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <script>
+      const home = document.getElementById("home");
+      const detail = document.getElementById("detail");
+      const heroMain = document.getElementById("hero-main");
+      const heroTitle = document.getElementById("hero-title");
+      const heroPrice = document.getElementById("hero-price");
+      const spots = document.querySelectorAll(".spot");
+      const downloadBtn = document.getElementById("download-btn");
+      const cartBtn = document.getElementById("cart-btn");
+      const expandBtn = document.getElementById("expand-btn");
+      const expandBody = document.getElementById("expand-body");
+      const shopMeta = {
+        카탄: { rate: "4.8", reviews: "28" },
+        윙스팬: { rate: "4.9", reviews: "31" },
+        코드네임: { rate: "4.7", reviews: "19" },
+        스플렌더: { rate: "4.6", reviews: "22" },
+        아줄: { rate: "4.8", reviews: "17" },
+        카르카손: { rate: "4.7", reviews: "25" },
+        딕싯: { rate: "4.5", reviews: "14" },
+        할리갈리: { rate: "4.6", reviews: "33" },
+        루미큐브: { rate: "4.8", reviews: "41" },
+        "티켓 투 라이드": { rate: "4.9", reviews: "29" },
+        팬데믹: { rate: "4.7", reviews: "21" },
+        웨어울프: { rate: "4.4", reviews: "16" },
+        젠가: { rate: "4.5", reviews: "36" },
+        우노: { rate: "4.6", reviews: "52" },
+        도블: { rate: "4.8", reviews: "27" },
+        사보타지: { rate: "4.5", reviews: "18" },
+        러브레터: { rate: "4.7", reviews: "23" },
+        아발론: { rate: "4.8", reviews: "34" },
+        "세븐 원더스": { rate: "4.9", reviews: "29" },
+        캐스캐디아: { rate: "4.8", reviews: "21" },
+        킹도미노: { rate: "4.6", reviews: "15" },
+        블로쿠스: { rate: "4.7", reviews: "26" },
+        스컬킹: { rate: "4.8", reviews: "19" },
+      };
+
+      function ratingText(title) {
+        const meta = shopMeta[title] || { rate: "4.6", reviews: "12" };
+        return "★ " + meta.rate + " · 리뷰 " + meta.reviews;
+      }
+
+      function gameData(el) {
+        const originalEl = el.querySelector(".original");
+        return {
+          title: el.dataset.title,
+          price: el.dataset.price,
+          original: originalEl ? originalEl.textContent : "",
+          desc: el.dataset.desc,
+          more: el.dataset.more || "구성과 플레이 방법을 이 칸에서 확인할 수 있습니다.",
+          tags: el.dataset.tags,
+          features: el.dataset.features || "2~4인, 30분, 만 8세",
+          cover: el.querySelector(".cover"),
+        };
+      }
+
+      function fillTags(id, text) {
+        const box = document.getElementById(id);
+        box.innerHTML = "";
+        text.split(",").forEach(function (tag) {
+          const span = document.createElement("span");
+          span.textContent = tag.trim();
+          box.appendChild(span);
+        });
+      }
+
+      function setHero(spot) {
+        if (!spot) {
+          return;
+        }
+        spots.forEach(function (item) {
+          item.classList.remove("active");
+        });
+        spot.classList.add("active");
+
+        const data = gameData(spot);
+        const cover = document.getElementById("hero-cover");
+        const copy = document.getElementById("hero-copy");
+        const nextSrc = data.cover.querySelector("img").getAttribute("src");
+        const front = cover.querySelector(".hero-photo.is-front");
+        const same = front && front.getAttribute("src") === nextSrc;
+
+        copy.classList.add("is-swap");
+        window.setTimeout(function () {
+          heroTitle.textContent = data.title;
+          heroPrice.textContent = data.price;
+          copy.classList.remove("is-swap");
+        }, 180);
+
+        const oldFlag = cover.querySelector(".flag");
+        const spotFlag = data.cover.querySelector(".flag");
+        if (oldFlag) {
+          oldFlag.remove();
+        }
+        if (spotFlag) {
+          cover.insertBefore(spotFlag.cloneNode(true), cover.firstChild);
+        }
+
+        if (!same) {
+          const incoming = document.createElement("img");
+          incoming.className = "hero-photo";
+          incoming.src = nextSrc;
+          incoming.alt = data.title;
+          cover.appendChild(incoming);
+          window.requestAnimationFrame(function () {
+            incoming.classList.add("is-front");
+            if (front) {
+              front.classList.remove("is-front");
+            }
+          });
+          window.setTimeout(function () {
+            if (front && front.parentNode) {
+              front.remove();
+            }
+          }, 600);
+        }
+
+        heroMain.dataset.title = data.title;
+        heroMain.dataset.price = data.price;
+        heroMain.dataset.desc = data.desc;
+        heroMain.dataset.more = data.more;
+        heroMain.dataset.tags = data.tags;
+        heroMain.dataset.features = data.features;
+      }
+
+      const heroBox = document.querySelector(".hero");
+      const heroBar = document.getElementById("hero-progress-bar");
+      const HERO_MS = 4000;
+      let heroIndex = 0;
+      let heroTimer = null;
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      function restartHeroBar() {
+        if (!heroBar) {
+          return;
+        }
+        heroBar.classList.remove("run");
+        void heroBar.offsetWidth;
+        heroBar.classList.add("run");
+      }
+
+      function nextHeroSlide() {
+        heroIndex = (heroIndex + 1) % spots.length;
+        setHero(spots[heroIndex]);
+        restartHeroBar();
+      }
+
+      function startHeroRotate() {
+        window.clearInterval(heroTimer);
+        if (reduceMotion) {
+          return;
+        }
+        restartHeroBar();
+        heroTimer = window.setInterval(nextHeroSlide, HERO_MS);
+      }
+
+      function stopHeroRotate() {
+        window.clearInterval(heroTimer);
+        heroTimer = null;
+      }
+
+      function showToast(message) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.classList.add("is-on");
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(function () {
+          toast.classList.remove("is-on");
+        }, 2200);
+      }
+
+      function fadeSwap(showEl, hideEl, done) {
+        if (!hideEl || hideEl.hidden) {
+          showEl.hidden = false;
+          if (done) {
+            done();
+          }
+          return;
+        }
+        if (reduceMotion) {
+          hideEl.hidden = true;
+          showEl.hidden = false;
+          window.scrollTo(0, 0);
+          if (done) {
+            done();
+          }
+          return;
+        }
+        hideEl.classList.add("is-leaving");
+        window.setTimeout(function () {
+          hideEl.hidden = true;
+          hideEl.classList.remove("is-leaving");
+          showEl.hidden = false;
+          showEl.classList.add("is-leaving");
+          window.scrollTo(0, 0);
+          window.requestAnimationFrame(function () {
+            window.requestAnimationFrame(function () {
+              showEl.classList.remove("is-leaving");
+            });
+          });
+          if (done) {
+            done();
+          }
+        }, 280);
+      }
+
+      function showHome(after) {
+        if (!home.hidden) {
+          startHeroRotate();
+          if (after) {
+            after();
+          }
+          return;
+        }
+        fadeSwap(home, detail, function () {
+          startHeroRotate();
+          if (after) {
+            after();
+          }
+        });
+      }
+
+      function fillSpecs(features, tags) {
+        const parts = features.split(",").map(function (part) {
+          return part.trim();
+        });
+        document.getElementById("spec-people").textContent =
+          parts.find(function (part) {
+            return part.indexOf("인") !== -1;
+          }) || "-";
+        document.getElementById("spec-time").textContent =
+          parts.find(function (part) {
+            return part.indexOf("분") !== -1;
+          }) || "-";
+        document.getElementById("spec-age").textContent =
+          parts.find(function (part) {
+            return part.indexOf("만") !== -1;
+          }) || "-";
+        document.getElementById("spec-genre").textContent = tags;
+      }
+
+      function fillRelated(title, tags) {
+        const row = document.getElementById("related-row");
+        row.innerHTML = "";
+        const tagList = (tags || "").split(",").map(function (tag) {
+          return tag.trim();
+        });
+        const matches = Array.prototype.filter
+          .call(document.querySelectorAll("#home .card"), function (card) {
+            if (card.dataset.title === title) {
+              return false;
+            }
+            const cardTags = (card.dataset.tags || "").split(",").map(function (tag) {
+              return tag.trim();
+            });
+            return tagList.some(function (tag) {
+              return cardTags.indexOf(tag) !== -1;
+            });
+          })
+          .slice(0, 4);
+        matches.forEach(function (card) {
+          const clone = card.cloneNode(true);
+          clone.classList.add("is-in");
+          clone.style.transitionDelay = "0s";
+          clone.addEventListener("click", function () {
+            showDetail(clone);
+          });
+          row.appendChild(clone);
+        });
+      }
+
+      function showDetail(el) {
+        const data = gameData(el);
+        document.getElementById("detail-title").textContent = data.title;
+        document.getElementById("detail-desc").textContent = data.desc;
+        document.getElementById("detail-price").textContent = data.price;
+        document.getElementById("detail-rating").textContent = ratingText(data.title);
+        const original = document.getElementById("detail-original");
+        original.textContent = data.original;
+        original.hidden = !data.original;
+        expandBody.textContent = data.more;
+        expandBody.hidden = true;
+        expandBtn.textContent = "규칙 더 보기 ∨";
+
+        fillTags("detail-tags", data.tags);
+        fillTags("detail-features", data.features);
+        fillSpecs(data.features, data.tags);
+
+        const coverClone = data.cover.cloneNode(true);
+        coverClone.querySelectorAll(".card-more").forEach(function (node) {
+          node.remove();
+        });
+        document.getElementById("detail-cover").innerHTML = coverClone.innerHTML;
+        fillRelated(data.title, data.tags);
+
+        downloadBtn.disabled = false;
+        downloadBtn.textContent = "바로 구매";
+        cartBtn.disabled = false;
+        cartBtn.textContent = "장바구니";
+
+        stopHeroRotate();
+        if (home.hidden) {
+          window.scrollTo(0, 0);
+        }
+        fadeSwap(detail, home);
+      }
+
+      spots.forEach(function (spot, index) {
+        spot.addEventListener("mouseenter", function () {
+          heroIndex = index;
+          setHero(spot);
+          restartHeroBar();
+        });
+        spot.addEventListener("click", function () {
+          heroIndex = index;
+          setHero(spot);
+          showDetail(spot);
+        });
+      });
+
+      heroMain.addEventListener("click", function () {
+        showDetail(heroMain);
+      });
+
+      heroBox.addEventListener("mouseenter", function () {
+        heroBox.classList.add("is-paused");
+        stopHeroRotate();
+      });
+      heroBox.addEventListener("mouseleave", function () {
+        heroBox.classList.remove("is-paused");
+        startHeroRotate();
+      });
+
+      startHeroRotate();
+
+      const cardObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-in");
+              cardObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -32px 0px" }
+      );
+
+      document.querySelectorAll("#home .card").forEach(function (card, index) {
+        const heading = card.querySelector("h3");
+        if (heading && !card.querySelector(".rating")) {
+          const line = document.createElement("p");
+          line.className = "rating";
+          line.textContent = ratingText(card.dataset.title);
+          heading.insertAdjacentElement("afterend", line);
+        }
+        const cover = card.querySelector(".cover");
+        if (cover && !cover.querySelector(".card-more")) {
+          const more = document.createElement("span");
+          more.className = "card-more";
+          more.textContent = "자세히 보기";
+          cover.appendChild(more);
+        }
+        card.style.transitionDelay = (index % 5) * 0.06 + "s";
+        if (reduceMotion) {
+          card.classList.add("is-in");
+        } else {
+          cardObserver.observe(card);
+        }
+        card.addEventListener("click", function () {
+          showDetail(card);
+        });
+      });
+
+      document.getElementById("back-btn").addEventListener("click", showHome);
+      document.getElementById("logo-btn").addEventListener("click", showHome);
+
+      function goHomeSection(id) {
+        const target = document.getElementById(id);
+        showHome(function () {
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      }
+
+      document.getElementById("nav-store").addEventListener("click", function (event) {
+        event.preventDefault();
+        showHome();
+      });
+      document.getElementById("nav-new").addEventListener("click", function (event) {
+        event.preventDefault();
+        goHomeSection("deals");
+      });
+      document.getElementById("nav-best").addEventListener("click", function (event) {
+        event.preventDefault();
+        goHomeSection("best");
+      });
+      document.querySelectorAll("#nav-about, #nav-support, #nav-login, #nav-join").forEach(function (link) {
+        link.addEventListener("click", function (event) {
+          event.preventDefault();
+        });
+      });
+
+      downloadBtn.addEventListener("click", function () {
+        downloadBtn.disabled = true;
+        downloadBtn.textContent = "결제 중…";
+        setTimeout(function () {
+          downloadBtn.textContent = "주문 완료 · 배송 준비";
+        }, 800);
+      });
+
+      cartBtn.addEventListener("click", function () {
+        cartBtn.disabled = true;
+        cartBtn.textContent = "장바구니에 담김";
+        const title = document.getElementById("detail-title").textContent;
+        showToast(title + " · 장바구니에 담았습니다");
+      });
+
+      expandBtn.addEventListener("click", function () {
+        const open = expandBody.hidden;
+        expandBody.hidden = !open;
+        expandBtn.textContent = open ? "접기 ∧" : "규칙 더 보기 ∨";
+      });
+
+      document.getElementById("all-achieves").addEventListener("click", function (event) {
+        event.preventDefault();
+      });
+    </script>
+  </body>
+</html>
