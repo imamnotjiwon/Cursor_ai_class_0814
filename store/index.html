@@ -185,7 +185,7 @@
       }
 
       .cart-badge.is-zero {
-        display: none;
+        display: none !important;
       }
 
       .install:hover {
@@ -285,10 +285,8 @@
         opacity: 0;
       }
 
-      #detail[hidden],
-      #home[hidden],
-      #cart[hidden] {
-        display: none;
+      [hidden] {
+        display: none !important;
       }
 
       #home.is-searching .hero,
